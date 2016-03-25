@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_mytranslation" default="compile.module.mytranslation">
+  <dirname property="module.mytranslation.basedir" file="${ant.file.module_mytranslation}"/>
+  
+  <property name="module.jdk.home.mytranslation" value="${jdk.home.intellij_idea_community_edition_ic-145.258.11}"/>
+  <property name="module.jdk.bin.mytranslation" value="${jdk.bin.intellij_idea_community_edition_ic-145.258.11}"/>
+  <property name="module.jdk.classpath.mytranslation" value="jdk.classpath.intellij_idea_community_edition_ic-145.258.11"/>
+  
+  <property name="compiler.args.mytranslation" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="mytranslation.output.dir" value="${module.mytranslation.basedir}/out/production/MyTranslation"/>
+  <property name="mytranslation.testoutput.dir" value="${module.mytranslation.basedir}/out/test/MyTranslation"/>
+  
+  <path id="mytranslation.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="mytranslation.module.production.classpath">
+    <path refid="${module.jdk.classpath.mytranslation}"/>
+    <pathelement location="${basedir}/libs/commons-logging-1.2.jar"/>
+    <pathelement location="${basedir}/libs/httpclient-4.5.2.jar"/>
+    <pathelement location="${basedir}/libs/httpcore-4.4.4.jar"/>
+    <pathelement location="${basedir}/libs/servlet-api.jar"/>
+  </path>
+  
+  <path id="mytranslation.runtime.production.module.classpath">
+    <pathelement location="${mytranslation.output.dir}"/>
+    <pathelement location="${basedir}/libs/commons-logging-1.2.jar"/>
+    <pathelement location="${basedir}/libs/httpclient-4.5.2.jar"/>
+    <pathelement location="${basedir}/libs/httpcore-4.4.4.jar"/>
+    <pathelement location="${basedir}/libs/servlet-api.jar"/>
+  </path>
+  
+  <path id="mytranslation.module.classpath">
+    <path refid="${module.jdk.classpath.mytranslation}"/>
+    <pathelement location="${mytranslation.output.dir}"/>
+    <pathelement location="${basedir}/libs/commons-logging-1.2.jar"/>
+    <pathelement location="${basedir}/libs/httpclient-4.5.2.jar"/>
+    <pathelement location="${basedir}/libs/httpcore-4.4.4.jar"/>
+    <pathelement location="${basedir}/libs/servlet-api.jar"/>
+  </path>
+  
+  <path id="mytranslation.runtime.module.classpath">
+    <pathelement location="${mytranslation.testoutput.dir}"/>
+    <pathelement location="${mytranslation.output.dir}"/>
+    <pathelement location="${basedir}/libs/commons-logging-1.2.jar"/>
+    <pathelement location="${basedir}/libs/httpclient-4.5.2.jar"/>
+    <pathelement location="${basedir}/libs/httpcore-4.4.4.jar"/>
+    <pathelement location="${basedir}/libs/servlet-api.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.mytranslation">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.mytranslation">
+    <patternset refid="excluded.from.module.mytranslation"/>
+  </patternset>
+  
+  <path id="mytranslation.module.sourcepath">
+    <dirset dir="${module.mytranslation.basedir}">
+      <include name="src"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.mytranslation" depends="compile.module.mytranslation.production,compile.module.mytranslation.tests" description="Compile module MyTranslation"/>
+  
+  <target name="compile.module.mytranslation.production" depends="register.custom.compilers" description="Compile module MyTranslation; production classes">
+    <mkdir dir="${mytranslation.output.dir}"/>
+    <javac2 destdir="${mytranslation.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.mytranslation}/javac">
+      <compilerarg line="${compiler.args.mytranslation}"/>
+      <bootclasspath refid="mytranslation.module.bootclasspath"/>
+      <classpath refid="mytranslation.module.production.classpath"/>
+      <src refid="mytranslation.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.mytranslation"/>
+    </javac2>
+    
+    <copy todir="${mytranslation.output.dir}">
+      <fileset dir="${module.mytranslation.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.mytranslation.basedir}/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.mytranslation.tests" depends="register.custom.compilers,compile.module.mytranslation.production" description="compile module MyTranslation; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.mytranslation" description="cleanup module">
+    <delete dir="${mytranslation.output.dir}"/>
+    <delete dir="${mytranslation.testoutput.dir}"/>
+  </target>
+  
+  <property name="mytranslation.plugin.path.jar" value="${module.mytranslation.basedir}/MyTranslation.zip"/>
+  
+  <!-- Build archive for plugin 'MyTranslation' -->
+  <target name="plugin.build.jar.mytranslation" depends="compile.module.mytranslation" description="Build plugin archive for module &#39;MyTranslation&#39;">
+    <property name="tmp.dir.mytranslation" value="${module.mytranslation.basedir}/../temp"/>
+    <mkdir dir="${tmp.dir.mytranslation}"/>
+    <mkdir dir="${tmp.dir.mytranslation}/lib"/>
+    <jar destfile="${tmp.dir.mytranslation}/lib/MyTranslation.jar" duplicate="preserve">
+      <zipfileset dir="${module.mytranslation.basedir}/out/production/MyTranslation"/>
+      <zipfileset file="${module.mytranslation.basedir}/resources/META-INF/plugin.xml" prefix="META-INF"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+    <copy file="${module.mytranslation.basedir}/libs/commons-logging-1.2.jar" tofile="${tmp.dir.mytranslation}/lib/commons-logging-1.2.jar"/>
+    <copy file="${module.mytranslation.basedir}/libs/httpclient-4.5.2.jar" tofile="${tmp.dir.mytranslation}/lib/httpclient-4.5.2.jar"/>
+    <copy file="${module.mytranslation.basedir}/libs/servlet-api.jar" tofile="${tmp.dir.mytranslation}/lib/servlet-api.jar"/>
+    <copy file="${module.mytranslation.basedir}/libs/httpcore-4.4.4.jar" tofile="${tmp.dir.mytranslation}/lib/httpcore-4.4.4.jar"/>
+    <zip destfile="${mytranslation.plugin.path.jar}">
+      <fileset dir="${module.mytranslation.basedir}/../temp"/>
+    </zip>
+    <delete dir="${tmp.dir.mytranslation}"/>
+  </target>
+</project>
