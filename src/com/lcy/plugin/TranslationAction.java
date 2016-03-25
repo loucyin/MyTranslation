@@ -25,16 +25,16 @@ import java.net.URISyntaxException;
  */
 public class TranslationAction extends AnAction {
 
-    //"http://fanyi.youdao.com/openapi.do?keyfrom=studyApi2016&key=912558092&type=data&doctype=json&callback=show&version=1.1&q=";
-
     private static final String HOST = "fanyi.youdao.com";
     private static final String PATH = "/openapi.do";
 
     private static final String PARAM_KEY_FROM = "keyfrom";
-    private static final String KEY_FROM = "studyApi2016";
+    //key_form不能使用，需要自己去有道api申请
+    private static final String KEY_FROM = "yourKeyFrom";
 
     private static final String PARAM_KEY = "key";
-    private static final String KEY = "912558092";
+    //这个key也没法使用
+    private static final String KEY = "912000092";
 
     private static final String PARAM_TYPE = "type";
     private static final String TYPE = "data";
